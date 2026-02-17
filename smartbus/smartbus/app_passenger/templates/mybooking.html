@@ -1,0 +1,13 @@
+<h2>My Bookings</h2>
+
+{% for i in bookings %}
+Bus: {{ i.trip.busroute.bid.name }} <br>
+Seat: {{ i.seat.seatno }} <br>
+Status: {{ i.payment_status }} <br>
+
+<a href="{% url 'passenger:track_bus' i.trip.id %}">
+Track Bus
+</a>
+
+<hr>
+{% endfor %}

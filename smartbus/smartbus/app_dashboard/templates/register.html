@@ -1,0 +1,49 @@
+{% load static %}
+{% include 'layout/partials/operator/header.html' %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h6 class="mb-4">Operator Registration</h6>
+            <form action="{% url 'dashboard:reg' %}" method="post">
+            {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="label">Name</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" name="name" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">Please enter the name here.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="label">Username</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" name="username" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">Please enter the username here.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="label">Password</label>
+                    <input type="password" class="form-control" id="exampleInputEmail1" name="password" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">Please enter the password here.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="label">Email</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">Please enter the Email here.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="label">Contact</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" name="contact" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">Please enter the Contact here.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="label">District Name</label>
+                    <select name="dis" id="class" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <option value="">Select District</option>
+                        {% for i in list %}
+                        <option value="{{i.id}}">{{i.name}}</option><!--for the fetch the values from district-->
+                        {% endfor %}
+                    </select>
+                    <div id="emailHelp" class="form-text">Please enter the district name here.</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% include 'layout/partials/operator/footer.html' %}

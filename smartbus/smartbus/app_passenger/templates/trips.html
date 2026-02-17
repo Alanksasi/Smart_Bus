@@ -1,0 +1,7 @@
+<h3>Select Trip</h3>
+
+{% for i in trips %}
+<a href="{% url 'passenger:seats' i.id %}">
+{{ i.busroute.bid.name }} - {{ i.date }}
+</a><br>
+{% endfor %}

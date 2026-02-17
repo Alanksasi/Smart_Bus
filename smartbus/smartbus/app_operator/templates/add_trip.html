@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add Trip</title>
+<style>
+body{
+    font-family:Arial;
+    background:#f5f5f5;
+}
+.form-box{
+    width:400px;
+    margin:80px auto;
+    padding:25px;
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 0 10px #ccc;
+}
+h2{text-align:center;}
+input,select{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+}
+button{
+    width:100%;
+    padding:12px;
+    background:#007bff;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+}
+button:hover{background:#0056b3;}
+</style>
+</head>
+<body>
+
+<div class="form-box">
+<h2>Add Trip</h2>
+
+<form method="POST">
+{% csrf_token %}
+
+<select name="busroute" required>
+<option value="">Select Bus Route</option>
+{% for route in busroutes %}
+<option value="{{ route.id }}">
+{{ route.bid }} - {{ route.rid }} ({{ route.time }})
+</option>
+{% endfor %}
+</select>
+
+<input type="date" name="date" required>
+
+<button>Add Trip</button>
+</form>
+</div>
+
+</body>
+</html>

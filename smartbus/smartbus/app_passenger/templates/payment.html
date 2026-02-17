@@ -1,0 +1,15 @@
+<!-- <h3>Confirm Payment</h3>
+
+<form method="post">
+    {% csrf_token %}
+    <button>Pay Now</button>
+</form> -->
+
+<h2>Payment</h2>
+
+<p>Total Seats: {{ bookings.count }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button>Pay Now</button>
+</form>

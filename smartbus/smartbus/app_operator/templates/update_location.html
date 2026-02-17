@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Update Location</title>
+<style>
+body{
+    font-family:Arial;
+    background:#eef2f7;
+}
+.container{
+    width:400px;
+    margin:80px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 0 8px #ccc;
+}
+button{
+    width:100%;
+    padding:12px;
+    background:#28a745;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>Update Live Location</h2>
+
+<form method="POST">
+{% csrf_token %}
+
+<select name="location" required>
+<option value="">Select Location</option>
+{% for loc in locations %}
+<option value="{{ loc.id }}">{{ loc.name }}</option>
+{% endfor %}
+</select>
+
+<br><br>
+<button>Update Location</button>
+
+</form>
+</div>
+
+</body>
+</html>

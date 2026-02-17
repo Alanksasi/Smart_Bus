@@ -1,0 +1,43 @@
+{% load static %}
+{% include 'layout/partials/operator/header.html' %}
+<div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h6 class="mb-4">BUS ROUTE REGISTRATION</h6>
+                            <form method="POST" action="{% url 'operator:busroute' %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="bid" class="label">Bus</label>
+                                    <br>
+                                    <!-- <select name="bid" id="class" class="form-control" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp">
+                                        <option value="">Select Bus</option> -->
+                                        {% for i in list %}
+                                        <input type="checkbox" name="bid" value="{{i.id}}" style="height:15px !important;width:15px !important"> &nbsp;{{i.name}}<br>
+                                        {% endfor %}
+                                    <!-- </select> -->
+                                </div>
+                                <div class="mb-3">
+                                    <label for="rid" class="label">Route</label>
+                                    <br>
+                                    <!-- <select name="rid" id="class" class="form-control" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp">
+                                        <option value="">Select Route</option> -->
+                                        {% for i in lists %}
+                                        <input type="checkbox" name="rid" value="{{i.id}}" style="height:15px !important;width:15px !important"> &nbsp;{{i.name}}<br>
+                                        {% endfor %}
+                                    <!-- </select> -->
+                                </div>
+                                <div>
+                                    <label for="time" class="label">Time Schedule</label>
+                                    <input type="time" class="form-control" id="exampleInputEmail1" name="time" aria-describedby="emailHelp">
+                                </div>
+                                <div></div>
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'layout/partials/operator/footer.html' %}

@@ -1,0 +1,10 @@
+<h3>Confirm Booking</h3>
+
+Bus : {{ trip.busroute.bid.name }} <br>
+Route : {{ trip.busroute.rid.name }} <br>
+Seat : {{ seat.seatno }} <br>
+
+<form method="post">
+    {% csrf_token %}
+    <button>Confirm Booking</button>
+</form>

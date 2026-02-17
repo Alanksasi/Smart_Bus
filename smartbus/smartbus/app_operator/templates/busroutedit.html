@@ -1,0 +1,42 @@
+{% load static %}
+{% include 'layout/partials/operator/header.html' %}
+<div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            
+                            <form method="POST" action="{% url 'operator:brouteup' broutev.id %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <h6 class="mb-4">BUS ROUTE EDIT</h6>
+                                    <label for="bid" class="label">Bus</label>
+                                    <select name="bid" id="class" class="form-control" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp">
+                                        <option value="{{ broutev.bid }}">Select Bus</option>
+                                        {% for i in list %}
+                                        <option value="{{i.id}}">{{i.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="rid" class="label">Route</label>
+                                    <select name="rid" id="class" class="form-control" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp">
+                                        <option value="{{ broutev.rid }}">Select Route</option>
+                                        {% for i in lists %}
+                                        <option value="{{i.id}}">{{i.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="time" class="label">Time Schedule</label>
+                                    <input type="time" class="form-control" id="exampleInputEmail1" name="time" value="{{ broutev.time }}" aria-describedby="emailHelp">
+                                </div>
+                                <div></div>
+                                <button type="submit" class="btn btn-primary">UPDATE</button>
+                            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'layout/partials/operator/footer.html' %}

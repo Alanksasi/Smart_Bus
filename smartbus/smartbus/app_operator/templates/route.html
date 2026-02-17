@@ -1,0 +1,21 @@
+{% load static %}
+{% include 'layout/partials/operator/header.html' %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4">ADD ROUTES</h6>
+                    <form action="{% url 'operator:route' %}" method="post">
+                    {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="label">Route Name</label>
+                                <input type="text" class="form-control" id="exampleInputEmail1" name="name" aria-describedby="emailHelp">
+                                <div id="emailHelp" class="form-text"></div>
+                        </div>
+                            <button type="submit" class="btn btn-primary">ADD</button>
+                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'layout/partials/operator/footer.html' %}

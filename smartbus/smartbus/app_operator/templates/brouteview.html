@@ -1,0 +1,32 @@
+{% load static %}
+{% include 'layout/partials/operator/header.html' %}
+<div class="col-sm-12 col-xl-12">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h6 class="mb-4">Bus Route View</h6>
+                            <table class="table table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nos</th>
+                                        <th scope="col">Bus</th>
+                                        <th scope="col">Route</th>
+                                        <th scope="col">Time Schedule</th>
+                                        <th scope="col">Update</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in broutev %}
+                                    <tr>
+                                        <th scope="row">{{ forloop.counter }}</th> 
+                                        <td>{{ i.bid.name }}</td>
+                                        <td>{{ i.rid.name }}</td>
+                                        <td>{{ i.time }}</td>
+                                        <td><a href="{% url 'operator:brouteup' i.id %}"><button type="submit" class="btn bg-secondary">Update</button></a></td>   
+                                        <td><a href="{% url 'operator:broutedl' i.id %}"><button type="submit" class="btn btn-primary">Delete</button></a></td>                                         
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+{% include 'layout/partials/operator/footer.html' %}

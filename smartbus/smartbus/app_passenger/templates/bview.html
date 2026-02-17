@@ -1,0 +1,45 @@
+{% load static %}
+{% include 'layout/partials/guest/header.html' %}
+<section class="section__container banner__container">
+    <div class="container">
+        <div class="row g-4">
+
+            {% for i in bview %}
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="banner__card text-center p-4 shadow-sm rounded">
+
+                    <p class="fw-bold">
+                        <strong>No:</strong> 
+                        {{ forloop.counter }}
+                    </p>
+                    
+                    <a href="">
+                        🚍 {{ i.bid.name }}
+                    </a>
+                    <!-- <p class="card-text mb-2">
+                        🚍 {{ i.bid.name }}
+                    </p> -->
+
+                    <p class="mb-1">
+                        <strong>Bus Number:</strong><br>
+                        {{ i.bid.num }}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Contact:</strong><br>
+                        {{ i.bid.con }}
+                    </p>
+
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No buses available</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+{% include 'layout/partials/guest/footer.html' %}
