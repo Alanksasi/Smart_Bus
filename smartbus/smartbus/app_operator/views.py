@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from app_operator.models import BusReg, BusRoutes, LiveLocation, Routes, Seats, Trip
+from app_passenger.models import BookingMaster, BookingDetails
 from app_core.models import Location
 
 # Create your views here.
@@ -364,8 +365,8 @@ def add_trip(request):
     busroutes = BusRoutes.objects.all()
 
     if request.method == "POST":
-        busroute_id = request.POST('busroute')
-        date = request.POST('date')
+        busroute_id = request.POST.get('busroute')
+        date = request.POST.get('date')
 
         # Check duplicate trip
         if Trip.objects.filter(busroute_id=busroute_id, date=date).exists():
@@ -383,6 +384,20 @@ def add_trip(request):
             "<script>alert('Trip added successfully!');window.location='/operator/trip_view/';</script>"
         )
 
-    return render(request, "operator/add_trip.html", {
+    return render(request, "add_trip.html", {
         "busroutes": busroutes
+    })
+
+def trip_view(request):
+    trips = Trip.objects.all().order_by('-date')
+    return render(request, "trip_view.html", {"trips": trips})
+
+def view_bookings(request, trip_id):
+    trip = get_object_or_404(Trip, id=trip_id)
+    # We want to see all seats booked for this trip.
+    # BookingDetails -> Master -> Trip
+    bookings = BookingDetails.objects.filter(master__trip=trip)
+    return render(request, "operator/view_bookings.html", {
+        "trip": trip,
+        "bookings": bookings
     })

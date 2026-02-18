@@ -4,6 +4,7 @@ from app_passenger import views
 
 app_name="passenger"
 urlpatterns = [
+    path("routes/", views.routes, name="routes"),
     path("bview/<int:name>", views.bview, name="bview"),
     
     # # NEW — seat layout for booking
@@ -19,8 +20,14 @@ urlpatterns = [
     path("seats/<int:trip_id>/", views.seats, name="seats"),
 
     # Book a seat
-    path("book_seat/<int:trip_id>/<int:seat_id>/", views.book_seat, name="book_seat"),
+    # Book multiple seats
+    path("book_seats/<int:trip_id>/", views.book_seats, name="book_seats"),
+
+    path("mybookings/", views.mybookings, name="mybookings"),
     
+    # Payment
+    path("payment/<int:trip_id>/", views.payment, name="payment"),
+
     # NEW — live bus tracking
     path("track/<int:trip_id>/", views.track, name="track"),
 ]

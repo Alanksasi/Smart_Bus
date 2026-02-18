@@ -2,39 +2,50 @@
 {% include 'layout/partials/guest/header.html' %}
 <section class="section__container banner__container">
     <div class="container">
+        <h2 class="text-center mb-4">Available Buses for Today</h2>
         <div class="row g-4">
 
-            {% for i in bview %}
+            {% for item in buses %}
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="banner__card text-center p-4 shadow-sm rounded">
+                <div class="banner__card text-center p-4 shadow-sm rounded h-100">
 
-                    <p class="fw-bold">
-                        <strong>No:</strong> 
-                        {{ forloop.counter }}
-                    </p>
-                    
-                    <a href="">
-                        🚍 {{ i.bid.name }}
-                    </a>
-                    <!-- <p class="card-text mb-2">
-                        🚍 {{ i.bid.name }}
-                    </p> -->
+                    <h4 class="fw-bold mb-3">
+                        🚍 {{ item.bus_route.bid.name }}
+                    </h4>
 
-                    <p class="mb-1">
-                        <strong>Bus Number:</strong><br>
-                        {{ i.bid.num }}
-                    </p>
+                    <div class="mb-3 text-start">
+                        <p class="mb-1">
+                            <strong>Bus Number:</strong> {{ item.bus_route.bid.num }}
+                        </p>
+                        <p class="mb-1">
+                            <strong>Contact:</strong> {{ item.bus_route.bid.con }}
+                        </p>
+                        <p class="mb-1">
+                            <strong>Time:</strong> {{ item.bus_route.time }}
+                        </p>
+                        <p class="mb-1">
+                            <strong>Type:</strong> {{ item.bus_route.bid.get_seat_type_display }}
+                        </p>
+                    </div>
 
-                    <p class="mb-0">
-                        <strong>Contact:</strong><br>
-                        {{ i.bid.con }}
-                    </p>
+                    <div class="mt-4">
+                        {% if item.trip %}
+                        <a href="{% url 'passenger:seats' item.trip.id %}" class="btn btn-success w-100 mb-2">
+                            Book Now
+                        </a>
+                        <p class="text-muted small">Trip Status: {{ item.trip.get_status_display }}</p>
+                        {% else %}
+                        <button class="btn btn-secondary w-100 mb-2" disabled>
+                            No Trip Today
+                        </button>
+                        {% endif %}
+                    </div>
 
                 </div>
             </div>
             {% empty %}
             <div class="col-12 text-center">
-                <p>No buses available</p>
+                <p>No buses found for this route.</p>
             </div>
             {% endfor %}
 

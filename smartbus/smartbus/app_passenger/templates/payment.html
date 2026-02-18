@@ -1,15 +1,48 @@
-<!-- <h3>Confirm Payment</h3>
+{% include 'layout/partials/guest/header.html' %}
 
-<form method="post">
-    {% csrf_token %}
-    <button>Pay Now</button>
-</form> -->
+<div class="container mt-5">
+    <h2>Payment for Booking</h2>
 
-<h2>Payment</h2>
+    {% if booking %}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Booking Summary (ID: {{ booking.id }})
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Trip Details</h5>
+            <p class="card-text">
+                <strong>Route:</strong> {{ booking.trip.busroute.rid.name }}<br>
+                <strong>Date:</strong> {{ booking.trip.date }}<br>
+                <strong>Bus:</strong> {{ booking.trip.busroute.bid.name }}
+            </p>
 
-<p>Total Seats: {{ bookings.count }}</p>
+            <hr>
 
-<form method="post">
-    {% csrf_token %}
-    <button>Pay Now</button>
-</form>
+            <h5>Selected Seats</h5>
+            <ul class="list-group list-group-flush mb-3">
+                {% for detail in booking.details.all %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Seat {{ detail.seat.seatno }}
+                    <span class="badge bg-secondary">{{ detail.seat.seat_price }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <h4 class="text-end">Total Amount: {{ booking.amount }}</h4>
+
+            <div class="d-grid gap-2 mt-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-lg w-100">Pay Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        No booking found. <a href="{% url 'passenger:routes' %}">Book a ticket?</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% include 'layout/partials/guest/footer.html' %}

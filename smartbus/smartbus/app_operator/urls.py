@@ -23,8 +23,11 @@ urlpatterns = [
     # NEW — operator creates trips
     path("add_trip/", views.add_trip, name="add_trip"),
 
-    # # NEW — operator trip list
-    # path("trip_view/", views.trip_view, name="trip_view"),
+    # NEW — operator trip list
+    path("trip_view/", views.trip_view, name="trip_view"),
+
+    # NEW — view bookings for a trip
+    path("view_bookings/<int:trip_id>/", views.view_bookings, name="view_bookings"),
 
     # NEW — update live bus location
     path("updatelocation/<int:trip_id>/",

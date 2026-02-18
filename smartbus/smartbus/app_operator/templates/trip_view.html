@@ -1,0 +1,48 @@
+{% include 'layout/partials/operator/header.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>All Trips</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Trip ID</th>
+                    <th>Bus</th>
+                    <th>Route</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trip in trips %}
+                <tr>
+                    <td>{{ trip.id }}</td>
+                    <td>{{ trip.busroute.bid.name }} ({{ trip.busroute.bid.num }})</td>
+                    <td>{{ trip.busroute.rid.name }}</td>
+                    <td>{{ trip.date }}</td>
+                    <td>
+                        <span
+                            class="badge {% if trip.status == 'scheduled' %}bg-primary{% elif trip.status == 'running' %}bg-warning{% else %}bg-success{% endif %}">
+                            {{ trip.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'operator:view_bookings' trip.id %}" class="btn btn-sm btn-info">View
+                            Bookings</a>
+                        <a href="{% url 'operator:updatelocation' trip.id %}" class="btn btn-sm btn-secondary">Update
+                            Status/Loc</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No trips scheduled.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% include 'layout/partials/guest/footer.html' %}

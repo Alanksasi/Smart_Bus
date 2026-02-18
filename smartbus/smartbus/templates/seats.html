@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .seat-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px auto;
+    }
+
+    .seat {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-color: #fff;
+        user-select: none;
+        margin: 5px;
+    }
+
+    .seat.booked {
+        background-color: #dc3545;
+        /* Red */
+        color: white;
+        cursor: not-allowed;
+        pointer-events: none;
+        border-color: #dc3545;
+    }
+
+    .seat.selected {
+        background-color: #28a745;
+        /* Green */
+        color: white;
+        border-color: #28a745;
+    }
+
+    .seat:hover:not(.booked):not(.selected) {
+        background-color: #e2e6ea;
+    }
+
+    .aisle-gap {
+        width: 30px;
+        display: inline-block;
+    }
+
+    .row-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container mt-5 text-center">
+    <h2>Select Seats for {{ trip.busroute.rid.name }}</h2>
+    <p><strong>Date:</strong> {{ trip.date }} | <strong>Bus:</strong> {{ bus.name }} ({{ bus.seat_type }})</p>
+
+    <form method="POST" action="{% url 'passenger:book_seats' trip.id %}" id="booking-form">
+        {% csrf_token %}
+        <div class="d-inline-block text-start">
+            {% if bus.seat_type == '2x2' %}
+            <!-- 2x2 Layout: 2 seats, aisle, 2 seats -->
+            {% for seat in seats %}
+            {% if forloop.counter0|divisibleby:4 %}
+            <div class="row-container">
+                {% endif %}
+
+                {% if seat.id in booked_seats %}
+                <div class="seat booked" title="Booked">{{ seat.seatno }}</div>
+                {% else %}
+                <div class="seat available" onclick="toggleSeat(this, '{{ seat.id }}')">{{ seat.seatno }}</div>
+                {% endif %}
+
+                {% if forloop.counter|divisibleby:2 and not forloop.counter|divisibleby:4 %}
+                <div class="aisle-gap"></div>
+                {% endif %}
+
+                {% if forloop.counter|divisibleby:4 or forloop.last %}
+            </div>
+            {% endif %}
+            {% endfor %}
+
+            {% elif bus.seat_type == '2x3' %}
+            <!-- 2x3 Layout: 2 seats, aisle, 3 seats -->
+            {% for seat in seats %}
+            {% if forloop.counter0|divisibleby:5 %}
+            <div class="row-container">
+                {% endif %}
+
+                {% if seat.id in booked_seats %}
+                <div class="seat booked" title="Booked">{{ seat.seatno }}</div>
+                {% else %}
+                <div class="seat available" onclick="toggleSeat(this, '{{ seat.id }}')">{{ seat.seatno }}</div>
+                {% endif %}
+
+                <!-- Aisle after 2nd seat (index 1, 6, 11...) -->
+                <!-- Pattern: 0,1 [aisle] 2,3,4 -->
+                <!-- So if (counter % 5) == 2? No. counter is 1-based. 
+                         Idx 1 (2nd item) -> aisle. 
+                         (counter0 + 1) % 5 == 2? NO.
+                         Let's stick to counter.
+                         After 2nd item: counter=2. 2%5=2.
+                         After 7th item: counter=7. 7%5=2.
+                         So if (counter - 2) % 5 == 0? 
+                         2-2=0. 7-2=5. Yes.
+                    -->
+                {% if forloop.counter|add:"-2"|divisibleby:5 %}
+                <div class="aisle-gap"></div>
+                {% endif %}
+
+                {% if forloop.counter|divisibleby:5 or forloop.last %}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+
+        <div id="hidden-inputs"></div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary" id="book-btn" disabled>Book Selected Seats</button>
+        </div>
+    </form>
+
+    <div class="mt-4">
+        <span class="badge bg-danger p-2">Booked</span>
+        <span class="badge bg-success p-2">Selected</span>
+        <span class="badge bg-light text-dark border p-2">Available</span>
+    </div>
+</div>
+
+<script>
+    function toggleSeat(element, seatId) {
+        if (element.classList.contains('booked')) return;
+
+        element.classList.toggle('selected');
+        updateForm();
+    }
+
+    function updateForm() {
+        const selected = document.querySelectorAll('.seat.selected');
+        const hiddenDiv = document.getElementById('hidden-inputs');
+        const btn = document.getElementById('book-btn');
+
+        hiddenDiv.innerHTML = '';
+        if (selected.length > 0) {
+            btn.disabled = false;
+            btn.textContent = `Book ${selected.length} Seat(s)`;
+
+            selected.forEach(seat => {
+                // We need the ID. I passed it in onclick. 
+                // Wait, I can't easily get it back from DOM element unless I store it.
+                // Let's re-parse or change onclick. 
+                // Ah, I passed '{{ seat.id }}' to toggleSeat. 
+                // But toggleSeat doesn't store it on the element.
+            });
+        } else {
+            btn.disabled = true;
+            btn.textContent = 'Book Selected Seats';
+        }
+    }
+</script>
+
+<!-- Redefine script to handle ID correctly -->
+<script>
+    // Store selected IDs in a Set
+    const selectedSeatIds = new Set();
+
+    function toggleSeat(element, seatId) {
+        if (element.classList.contains('booked')) return;
+
+        if (selectedSeatIds.has(seatId)) {
+            selectedSeatIds.delete(seatId);
+            element.classList.remove('selected');
+        } else {
+            selectedSeatIds.add(seatId);
+            element.classList.add('selected');
+        }
+        updateFormInputs();
+    }
+
+    function updateFormInputs() {
+        const hiddenDiv = document.getElementById('hidden-inputs');
+        const btn = document.getElementById('book-btn');
+
+        hiddenDiv.innerHTML = '';
+
+        selectedSeatIds.forEach(id => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'seats';
+            input.value = id;
+            hiddenDiv.appendChild(input);
+        });
+
+        if (selectedSeatIds.size > 0) {
+            btn.disabled = false;
+            btn.textContent = `Book ${selectedSeatIds.size} Seat(s)`;
+        } else {
+            btn.disabled = true;
+            btn.textContent = 'Book Selected Seats';
+        }
+    }
+</script>
+{% endblock %}

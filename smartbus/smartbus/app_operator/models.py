@@ -14,14 +14,23 @@ class BusReg(models.Model):
         choices=(('2x2', '2 x 2'), ('2x3', '2 x 3'))
     )
     total_rows = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.name} ({self.num})"
     
 class Routes(models.Model):
     name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.name
     
 class BusRoutes(models.Model):
     bid = models.ForeignKey(BusReg,on_delete=models.CASCADE,blank=True)
     rid = models.ForeignKey(Routes,on_delete=models.CASCADE,blank=True)
     time = models.TimeField()
+
+    def __str__(self):
+        return f"{self.bid.name} - {self.rid.name} ({self.time})"
     
 # class Seats(models.Model):
 #     bid = models.ForeignKey(BusReg, on_delete=models.CASCADE, blank=True)

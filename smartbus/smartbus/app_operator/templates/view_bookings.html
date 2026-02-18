@@ -1,0 +1,44 @@
+{% include 'layout/partials/operator/header.html' %}
+
+
+<div class="container mt-5">
+    <h2>Bookings for {{ trip.busroute.rid.name }} on {{ trip.date }}</h2>
+    <p><strong>Bus:</strong> {{ trip.busroute.bid.name }} ({{ trip.busroute.bid.num }})</p>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Passenger Name</th>
+                    <th>Seat Number</th>
+                    <th>Booked At</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in bookings %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ detail.master.passenger.name }}</td>
+                    <td>{{ detail.seat.seatno }}</td>
+                    <td>{{ detail.master.booked_at }}</td>
+                    <td>
+                        <span
+                            class="badge {% if detail.master.payment_status == 'paid' %}bg-success{% else %}bg-warning{% endif %}">
+                            {{ detail.master.payment_status }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No bookings for this trip yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{% url 'operator:trip_view' %}" class="btn btn-secondary mt-3">Back to Trips</a>
+</div>
+{% endblock %}
+{% include 'layout/partials/operator/footer.html' %}
