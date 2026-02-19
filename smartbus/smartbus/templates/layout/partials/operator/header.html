@@ -46,7 +46,7 @@
 
 
         <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
+        <!-- <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
                     <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>DarkPan</h3>
@@ -93,7 +93,62 @@
                     </div>
                 </div>
             </nav>
-        </div>
+        </div> -->
+        <!-- ===== OPERATOR SIDEBAR ===== -->
+
+<div class="sidebar">
+
+    <h3 class="menu-title">Bus Management</h3>
+    <ul>
+        <li><a href="{% url 'operator:busreg' %}">Register Bus</a></li>
+        <li><a href="{% url 'operator:busv' %}">View Buses</a></li>
+    </ul>
+
+    <h3 class="menu-title">Route Management</h3>
+    <ul>
+        <li><a href="{% url 'operator:route' %}">Add Route</a></li>
+        <li><a href="{% url 'operator:routev' %}">View Routes</a></li>
+    </ul>
+
+    <h3 class="menu-title">Bus Route Mapping</h3>
+    <ul>
+        <li><a href="{% url 'operator:busroute' %}">Assign Bus Route</a></li>
+        <li><a href="{% url 'operator:broutev' %}">View Bus Routes</a></li>
+    </ul>
+
+    <h3 class="menu-title">Trip Management</h3>
+    <ul>
+        <li><a href="{% url 'operator:add_trip' %}">Create Trip</a></li>
+        <li><a href="{% url 'operator:trip_view' %}">View Trips</a></li>
+    </ul>
+
+    <h3 class="menu-title">Seat Management</h3>
+    <ul>
+        <!-- Note: this requires bus_id dynamically -->
+        <li>
+            <a href="{% url 'operator:seats' %}">Generate Seats (Select Bus)</a>
+        </li>
+    </ul>
+
+    <h3 class="menu-title">Bookings</h3>
+    <ul>
+        <!-- Needs trip_id dynamically -->
+        <li>
+            <a href="{% url 'operator:view_bookings' %}">View Trip Bookings</a>
+        </li>
+    </ul>
+
+    <h3 class="menu-title">Live Tracking</h3>
+    <ul>
+        <!-- Needs trip_id dynamically -->
+        <li>
+            <a href="{% url 'operator:updatelocation' %}">Update Bus Location</a>
+        </li>
+    </ul>
+
+</div>
+
+
         <!-- Sidebar End -->
 
 

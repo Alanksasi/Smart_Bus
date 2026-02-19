@@ -6,6 +6,11 @@ from app_operator.models import Routes
 from app_core.models import District
 from smartbus.users.models import User
 from django.core.mail import send_mail
+
+# from django.contrib.auth.decorators import login_required
+# from django.views.decorators.cache import never_cache
+# from django.contrib.auth import logout
+
 # Create your views here.
 def admins(request):
     return render(request,"admindashboard.html")
@@ -13,6 +18,8 @@ def admins(request):
 def guest(request):
     return render(request, "guestdashboard.html")
 
+# @never_cache
+# @login_required(login_url='/logins/')
 def logins(request):
     if request.method=="POST":
         name = request.POST.get('username')
@@ -97,3 +104,8 @@ def regi(request):
 def psg(request):
     routev = Routes.objects.all()
     return render(request, "guestdashboard.html",{"routev":routev})
+
+
+# def logout_view(request):
+#     logout(request)
+#     return HttpResponse("<script>alert('Logged out successfully');window.location='/logins/';</script>")

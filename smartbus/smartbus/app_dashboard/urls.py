@@ -12,4 +12,5 @@ urlpatterns = [
     path("dlt/<int:name>", views.dlt, name="dlt"),
     path("regi/", views.regi, name="regi"), #passenger registration
     path("psg/", views.psg, name="psg"),
+    # path("logout/",views.logout_view,name='logout'),
 ]

@@ -4,30 +4,17 @@ from app_operator.models import BusReg, BusRoutes, LiveLocation, Routes, Seats, 
 from app_passenger.models import BookingMaster, BookingDetails
 from app_core.models import Location
 
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 #------------------------------------------------Bus Registration(done by operator)------------------------------------------------
-def generate_seats(bus):
-    rows = bus.total_rows
-
-    if bus.seat_type == '2x2':
-        cols = ['A', 'B', 'C', 'D']
-    # else:
-    elif bus.seat_type == '2x3':
-        cols = ['A', 'B', 'C', 'D', 'E']
-
-    for r in range(1, rows + 1):
-        for c in cols:
-            Seats.objects.create(
-                bid=bus,
-                seatno=f"{r}{c}"
-            )
-
 # def generate_seats(bus):
 #     rows = bus.total_rows
 
 #     if bus.seat_type == '2x2':
 #         cols = ['A', 'B', 'C', 'D']
-#     else:
+#     # else:
+#     elif bus.seat_type == '2x3':
 #         cols = ['A', 'B', 'C', 'D', 'E']
 
 #     for r in range(1, rows + 1):
@@ -37,6 +24,25 @@ def generate_seats(bus):
 #                 seatno=f"{r}{c}"
 #             )
 
+def generate_seats(bus):
+    if Seats.objects.filter(bid=bus).exists():
+        return
+
+    rows = bus.total_rows
+
+    if bus.seat_type == '2x2':
+        cols = ['A', 'B', 'C', 'D']
+    else:
+        cols = ['A', 'B', 'C', 'D', 'E']
+
+    for r in range(1, rows + 1):
+        for c in cols:
+            Seats.objects.create(
+                bid=bus,
+                seatno=f"{r}{c}"
+            )
+
+@login_required
 def busreg(request):
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -329,7 +335,7 @@ def seats(request, bus_id):
 
 def updatelocation(request, trip_id):
     trip = get_object_or_404(Trip, id=trip_id)
-    locations = Location.object.all()
+    locations = Location.objects.all()
     
     if request.method == "POST":
         loc_id = request.POST('location')
