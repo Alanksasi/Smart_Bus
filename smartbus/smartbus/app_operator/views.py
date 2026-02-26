@@ -1,3 +1,5 @@
+# from arrow import now
+from django.utils.timezone import now
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from app_operator.models import BusReg, BusRoutes, LiveLocation, Routes, Seats, Trip
@@ -333,28 +335,28 @@ def seats(request, bus_id):
         "window.location='/operator/busv/';</script>"
     )
 
-def updatelocation(request, trip_id):
-    trip = get_object_or_404(Trip, id=trip_id)
-    locations = Location.objects.all()
+# def updatelocation(request, trip_id):
+#     trip = get_object_or_404(Trip, id=trip_id)
+#     locations = Location.objects.all()
     
-    if request.method == "POST":
-        loc_id = request.POST('location')
+#     if request.method == "POST":
+#         loc_id = request.POST('location')
         
-        LiveLocation.objects.update_or_create(
-            trip=trip,
-            defaults={'location_id': loc_id}
-        )
+#         LiveLocation.objects.update_or_create(
+#             trip=trip,
+#             defaults={'location_id': loc_id}
+#         )
 
-        # messages.success(request, "Location updated successfully!")
-        return HttpResponse(
-        "<script>alert('Location updated successfully!');window.location='';</script>"
-    )
-    # return redirect('operator:trip_view')
+#         # messages.success(request, "Location updated successfully!")
+#         return HttpResponse(
+#         "<script>alert('Location updated successfully!');window.location='';</script>"
+#     )
+#     # return redirect('operator:trip_view')
 
-    return render(request, "operator/update_location.html", {
-        "trip": trip,
-        "locations": locations
-    })
+#     return render(request, "operator/update_location.html", {
+#         "trip": trip,
+#         "locations": locations
+#     })
 
 # def update_location(request, trip_id):
 #     if request.method == "POST":
@@ -367,31 +369,110 @@ def updatelocation(request, trip_id):
 
 #     return redirect('operator:trip_view')
 
+# def add_trip(request):
+#     busroutes = BusRoutes.objects.all()
+
+#     if request.method == "POST":
+#         busroute_id = request.POST.get('busroute')
+#         date = request.POST.get('date')
+
+#         # Check duplicate trip
+#         if Trip.objects.filter(busroute_id=busroute_id, date=date).exists():
+#             return HttpResponse(
+#                 "<script>alert('Trip already exists!');window.location='/operator/add_trip/';</script>"
+#             )
+        
+#         # Create trip
+#         Trip.objects.create(
+#             busroute_id=busroute_id,
+#             date=date
+#         )
+        
+#         return HttpResponse(
+#             "<script>alert('Trip added successfully!');window.location='/operator/trip_view/';</script>"
+#         )
+
+#     return render(request, "add_trip.html", {
+#         "busroutes": busroutes
+#     })
+
+def updatelocation(request, trip_id):
+    trip = get_object_or_404(Trip, id=trip_id)
+    locations = Location.objects.all()
+
+    if request.method == "POST":
+        loc_id = request.POST.get('location')
+
+        LiveLocation.objects.update_or_create(
+            trip=trip,
+            defaults={'location_id': loc_id}
+        )
+
+        return HttpResponse("""
+            <script>
+                alert('Location updated successfully!');
+                window.location.href='/operator/trip_view/';
+            </script>
+        """)
+
+    return render(request, "update_location.html", {
+        "trip": trip,
+        "locations": locations
+    })
+
 def add_trip(request):
     busroutes = BusRoutes.objects.all()
 
     if request.method == "POST":
         busroute_id = request.POST.get('busroute')
-        date = request.POST.get('date')
+        trip_date = request.POST.get('date')
 
-        # Check duplicate trip
-        if Trip.objects.filter(busroute_id=busroute_id, date=date).exists():
-            return HttpResponse(
-                "<script>alert('Trip already exists!');window.location='/operator/add_trip/';</script>"
-            )
-        
+        # Check empty fields
+        if not busroute_id or not trip_date:
+            return HttpResponse("""
+                <script>
+                    alert('All fields are required!');
+                    window.location.href='/operator/add_trip/';
+                </script>
+            """)
+
+        # Prevent past date
+        if trip_date < str(now().date()):
+            return HttpResponse(f"""
+                <script>
+                    alert('Trip date cannot be in the past!');
+                    window.location.href='/operator/add_trip/';
+                </script>
+            """)
+
+        # Prevent duplicate trip
+        if Trip.objects.filter(
+            busroute_id=busroute_id,
+            date=trip_date
+        ).exists():
+            return HttpResponse("""
+                <script>
+                    alert('Trip already exists!');
+                    window.location.href='/operator/add_trip/';
+                </script>
+            """)
+
         # Create trip
         Trip.objects.create(
             busroute_id=busroute_id,
-            date=date
-        )
-        
-        return HttpResponse(
-            "<script>alert('Trip added successfully!');window.location='/operator/trip_view/';</script>"
+            date=trip_date
         )
 
+        return HttpResponse("""
+            <script>
+                alert('Trip added successfully!');
+                window.location.href='/operator/trip_view/';
+            </script>
+        """)
+
     return render(request, "add_trip.html", {
-        "busroutes": busroutes
+        "busroutes": busroutes,
+        "today": now().date()
     })
 
 def trip_view(request):
@@ -403,7 +484,7 @@ def view_bookings(request, trip_id):
     # We want to see all seats booked for this trip.
     # BookingDetails -> Master -> Trip
     bookings = BookingDetails.objects.filter(master__trip=trip)
-    return render(request, "operator/view_bookings.html", {
+    return render(request, "view_bookings.html", {
         "trip": trip,
         "bookings": bookings
     })

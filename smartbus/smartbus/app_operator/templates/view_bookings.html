@@ -1,5 +1,5 @@
 {% include 'layout/partials/operator/header.html' %}
-
+{% block content %}
 
 <div class="container mt-5">
     <h2>Bookings for {{ trip.busroute.rid.name }} on {{ trip.date }}</h2>
@@ -20,7 +20,8 @@
                 {% for detail in bookings %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ detail.master.passenger.name }}</td>
+                    <td>{{ detail.master.passenger.user.username }}</td>
+                    <!-- <td>{{ detail.master.passenger.name }}</td> -->
                     <td>{{ detail.seat.seatno }}</td>
                     <td>{{ detail.master.booked_at }}</td>
                     <td>

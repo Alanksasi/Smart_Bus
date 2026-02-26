@@ -15,7 +15,14 @@ class BookingMaster(models.Model):
     )
 
     def __str__(self):
-        return f"Booking {self.id} - {self.passenger.name}"
+        return f"Booking {self.id} - {self.passenger.user.username}"
+        # return f"Booking {self.id} - {self.passenger.name}"
+        
+    # ✅ ADD THIS METHOD
+    def get_seats(self):
+        return ", ".join(
+            detail.seat.seatno for detail in self.details.all()
+        )
 
 class BookingDetails(models.Model):
     master = models.ForeignKey(BookingMaster, on_delete=models.CASCADE, related_name='details')

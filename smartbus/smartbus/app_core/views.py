@@ -121,16 +121,16 @@ def cateup(request,name):
 
 
 
-def seller_booking_pie_chart(request): 
-    seller_data = (BookingDetails.objects.values('material__seller__seller_name') 
-                   .annotate(booking_count=Count('booking_master', distinct=True)) 
-                   .order_by('-booking_count')) 
-    labels = [item['material__seller__seller_name'] 
-    for item in seller_data if item['material__seller__seller_name']] 
-    data = [item['booking_count'] 
-            for item in seller_data if 
-            item['material__seller__seller_name']] 
-    context = { 'labels': labels, 
-               'data': data, 
-               } 
-    return render(request, 'Admin/booking_report.html', context)
+# def seller_booking_pie_chart(request): 
+#     seller_data = (BookingDetails.objects.values('material__seller__seller_name') 
+#                    .annotate(booking_count=Count('booking_master', distinct=True)) 
+#                    .order_by('-booking_count')) 
+#     labels = [item['material__seller__seller_name'] 
+#     for item in seller_data if item['material__seller__seller_name']] 
+#     data = [item['booking_count'] 
+#             for item in seller_data if 
+#             item['material__seller__seller_name']] 
+#     context = { 'labels': labels, 
+#                'data': data, 
+#                } 
+#     return render(request, 'Admin/booking_report.html', context)

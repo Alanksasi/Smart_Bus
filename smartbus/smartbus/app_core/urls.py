@@ -19,6 +19,6 @@ urlpatterns = [
     path("catedl/<int:name>", views.catedl, name="catdl"),
     path("cateup/<int:name>", views.cateup, name="catup"),
     
-    path('admin_booking_report/', views.seller_booking_pie_chart, name= 'admin_booking_report'),
+    # path('admin_booking_report/', views.seller_booking_pie_chart, name= 'admin_booking_report'),
 ]
 
