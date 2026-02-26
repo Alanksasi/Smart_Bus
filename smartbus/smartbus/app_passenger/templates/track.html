@@ -1,4 +1,78 @@
-<h3>Bus Live Location</h3>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Bus Tracking</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background:#f4f6f9;
+        }
+
+        .track-box{
+            max-width:500px;
+            margin:60px auto;
+            background:#ffffff;
+            padding:25px;
+            border-radius:10px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h3{
+            text-align:center;
+            margin-bottom:20px;
+        }
+
+        .status{
+            font-weight:bold;
+            padding:6px 10px;
+            border-radius:5px;
+            display:inline-block;
+        }
+
+        .scheduled{ background:#ffc107; color:#000; }
+        .running{ background:#28a745; color:#fff; }
+        .completed{ background:#6c757d; color:#fff; }
+
+        .info{
+            margin-top:15px;
+            font-size:15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="track-box">
+    <h3>🚌 Bus Live Tracking</h3>
+
+    <div>
+        Status:
+        <span class="status {{ trip.status }}">
+            {{ trip.get_status_display }}
+        </span>
+    </div>
+
+    <div class="info">
+        {% if location %}
+            <p><strong>Current Location:</strong> {{ location.location.loc }}</p>
+            <p><strong>Last Updated:</strong> {{ location.updated_at }}</p>
+        {% else %}
+            <p style="color:red;">Location not updated yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+    // Auto refresh page every 10 seconds
+    setTimeout(function(){
+        location.reload();
+    }, 10000);
+</script>
+
+</body>
+</html>
+
+<!-- <h3>Bus Live Location</h3>
 
 Current Location: {{ location.location.loc }} <br>
-Updated Time: {{ location.updated_at }}
+Updated Time: {{ location.updated_at }} -->

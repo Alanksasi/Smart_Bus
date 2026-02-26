@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Sum
+from django.utils.timezone import now
 
 from django.shortcuts import get_object_or_404, redirect, render
 from app_operator.models import BusRoutes, LiveLocation, Seats, Trip, Routes
@@ -421,9 +422,6 @@ def book_seats(request, trip_id):
     
 #     return redirect('passenger:routes')  
  
-def track(request, trip_id):
-    location = LiveLocation.objects.get(trip_id=trip_id)
-    return render(request, "track.html", {"location": location})
 
 def payment(request, trip_id):
     # trip_id is treated as booking_master_id here
@@ -447,3 +445,34 @@ def mybookings(request):
         
     bookings = BookingMaster.objects.filter(passenger=passenger).order_by('-booked_at')
     return render(request, "mybookings.html", {"bookings": bookings})
+
+# def track(request, trip_id):
+#     location = LiveLocation.objects.get(trip_id=trip_id)
+#     return render(request, "track.html", {"location": location})
+
+def track(request, trip_id):
+    trip = get_object_or_404(Trip, id=trip_id)
+
+    try:
+        location = LiveLocation.objects.get(trip=trip)
+    except LiveLocation.DoesNotExist:
+        location = None
+
+    return render(request, "track.html", {
+        "trip": trip,
+        "location": location
+    })
+
+
+def today_trips(request):
+    today = now().date()
+
+    bookings = BookingMaster.objects.filter(
+        passenger__user=request.user,
+        trip__date=today,
+        # payment_status="paid"   # optional but recommended
+    ).select_related("trip", "trip__busroute__bid")
+
+    return render(request, "today_trips.html", {
+        "bookings": bookings
+    })

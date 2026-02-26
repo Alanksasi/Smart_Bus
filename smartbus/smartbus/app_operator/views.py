@@ -3,7 +3,7 @@ from django.utils.timezone import now
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from app_operator.models import BusReg, BusRoutes, LiveLocation, Routes, Seats, Trip
-from app_passenger.models import BookingMaster, BookingDetails
+from app_passenger.models import BookingDetails
 from app_core.models import Location
 
 from django.contrib.auth.decorators import login_required

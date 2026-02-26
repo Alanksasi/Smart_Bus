@@ -30,4 +30,5 @@ urlpatterns = [
 
     # NEW — live bus tracking
     path("track/<int:trip_id>/", views.track, name="track"),
+    
 ]

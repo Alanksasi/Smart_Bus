@@ -145,14 +145,16 @@ def regi(request):
     else:
         return render(request,"registerpass.html")
 
+# def psg(request):
+    # routev = Routes.objects.all()
+    # return render(request, "guestdashboard.html",{"routev":routev})
+    
 def psg(request):
     bookings = BookingMaster.objects.filter(passenger__user=request.user).order_by('-booked_at')
     # order_by('-booking_date')[:5]
     return render(request, "dashboard.html", {
         "bookings": bookings
     })
-    # routev = Routes.objects.all()
-    # return render(request, "guestdashboard.html",{"routev":routev})
 
 # def logout_view(request):
 #     logout(request)
