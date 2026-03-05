@@ -2,19 +2,15 @@
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Sum
-from django.utils.timezone import now
 
 from django.shortcuts import get_object_or_404, redirect, render
 from app_operator.models import BusRoutes, LiveLocation, Seats, Trip, Routes
-from app_passenger.models import BookingMaster, BookingDetails
+from app_passenger.models import BookingMaster, BookingDetails, Feedback
 from app_dashboard.models import Passenger
-from app_core import models
 
 # Create your views here.
-
-# Create your views here.
-
 from datetime import date
+# Create your views here.
 
 def routes(request):
     routes_list = Routes.objects.all()
@@ -437,22 +433,70 @@ def payment(request, trip_id):
         "booking": booking
     })
 
-def mybookings(request):
-    passenger = Passenger.objects.filter(user=request.user).first()
-    if not passenger:
-        # Handle case where user is not a passenger
-        return redirect('passenger:routes')
+# def mybookings(request):
+#     passenger = Passenger.objects.filter(user=request.user).first()
+#     if not passenger:
+#         # Handle case where user is not a passenger
+#         return redirect('passenger:routes')
         
-    bookings = BookingMaster.objects.filter(passenger=passenger).order_by('-booked_at')
-    return render(request, "mybookings.html", {"bookings": bookings})
+#     bookings = BookingMaster.objects.filter(passenger=passenger).order_by('-booked_at')
+#     return render(request, "mybookings.html", {"bookings": bookings})
+
+def mybookings(request):
+
+    passenger = Passenger.objects.filter(user=request.user).first()
+
+    bookings = BookingMaster.objects.filter(
+        passenger=passenger
+    ).order_by('-booked_at')
+
+    today = date.today()
+
+    return render(request, "mybookings.html", {
+        "bookings": bookings,
+        "today": today
+    })
 
 # def track(request, trip_id):
 #     location = LiveLocation.objects.get(trip_id=trip_id)
 #     return render(request, "track.html", {"location": location})
 
-def track(request, trip_id):
-    trip = get_object_or_404(Trip, id=trip_id)
+# def track(request, trip_id):
+#     trip = get_object_or_404(Trip, id=trip_id)
 
+#     try:
+#         location = LiveLocation.objects.get(trip=trip)
+#     except LiveLocation.DoesNotExist:
+#         location = None
+
+#     return render(request, "track.html", {
+#         "trip": trip,
+#         "location": location
+#     })
+
+
+def track(request, trip_id):
+
+    passenger = Passenger.objects.filter(user=request.user).first()
+
+    trip = get_object_or_404(
+        Trip,
+        id=trip_id,
+        date=date.today()   # Only today's bus
+    )
+
+    # Check passenger booked this trip
+    booking = BookingMaster.objects.filter(
+        passenger=passenger,
+        trip=trip,
+        payment_status="paid"
+    ).exists()
+
+    if not booking:
+        messages.error(request, "You have no booking for this trip.")
+        return redirect("passenger:mybookings")
+
+    # Get location
     try:
         location = LiveLocation.objects.get(trip=trip)
     except LiveLocation.DoesNotExist:
@@ -462,17 +506,24 @@ def track(request, trip_id):
         "trip": trip,
         "location": location
     })
+    
+def feedback(request):
 
+    passenger = Passenger.objects.get(user=request.user)
 
-def today_trips(request):
-    today = now().date()
+    if request.method == "POST":
 
-    bookings = BookingMaster.objects.filter(
-        passenger__user=request.user,
-        trip__date=today,
-        # payment_status="paid"   # optional but recommended
-    ).select_related("trip", "trip__busroute__bid")
+        message = request.POST.get("message")
+        rating = request.POST.get("rating")
 
-    return render(request, "today_trips.html", {
-        "bookings": bookings
-    })
+        Feedback.objects.create(
+            passenger=passenger,
+            message=message,
+            rating=rating
+        )
+
+        messages.success(request,"Thank you for your feedback!")
+
+        return redirect("dashboard:psg")
+
+    return render(request,"feedback.html")

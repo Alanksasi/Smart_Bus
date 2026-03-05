@@ -1,11 +1,11 @@
-{% load static %}
+<!-- {% load static %}
 {% include 'layout/partials/admin/header.html' %}
 <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-secondary rounded h-100 p-4">
                             <h6 class="mb-4">Location Edit</h6>
-                            <form method="POST" action="{% url 'core:lup' locv.id %}">
+                            <form method="POST" action="#">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label for="name" class="label">Location Name</label>
@@ -21,7 +21,7 @@
                                         
                                         <option value="">Select District</option>
                                         {% for i in list %}
-                                        <option value="{{i.id}}" {% if i.id == locv.dis.id %}selected {% endif %}>{{i.name}}</option><!--for the fetch the values from district-->
+                                        <option value="{{i.id}}" {% if i.id == locv.dis.id %}selected {% endif %}>{{i.name}}</option><for the fetch the values from district>
                                         {% endfor %}
                                     </select>
                                     <div id="emailHelp" class="form-text">Please enter the district name here.
@@ -31,4 +31,4 @@
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
             </div>
-{% include 'layout/partials/admin/footer.html' %}
+{% include 'layout/partials/admin/footer.html' %} -->

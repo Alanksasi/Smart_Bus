@@ -2,11 +2,12 @@
 from django.utils.timezone import now
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
-from app_operator.models import BusReg, BusRoutes, LiveLocation, Routes, Seats, Trip
+from app_operator.models import BusReg, BusRoutes, LiveLocation, Location, RouteStop, Routes, Seats, Trip
 from app_passenger.models import BookingDetails
-from app_core.models import Location
 
 from django.contrib.auth.decorators import login_required
+
+from app_dashboard.models import Operator
 
 # Create your views here.
 #------------------------------------------------Bus Registration(done by operator)------------------------------------------------
@@ -191,7 +192,7 @@ def broutev(request):
     view = BusRoutes.objects.all()
     return render(request,"brouteview.html",{"broutev":view})
 
-#------------------------------------------------Route Delete------------------------------------------------
+#------------------------------------------------Bus Route Delete------------------------------------------------
 def broutedl(request,name):
     d = BusRoutes.objects.get(id=name)
     d.delete()
@@ -211,6 +212,111 @@ def brouteup(request,name):
         up.save()
         return HttpResponse("<script>alert('Updated Successfully');window.location='/operator/broutev/';</script>")
     return render(request,"busroutedit.html",{"broutev":up})
+
+
+# ---------------- LOCATION ----------------
+
+def location(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+
+        if Location.objects.filter(name=name).exists():
+            return HttpResponse("<script>alert('Location Already Exists');window.location='/operator/location/';</script>")
+
+        Location.objects.create(name=name)
+
+        return HttpResponse("<script>alert('Inserted Successfully');window.location='/operator/location';</script>")
+
+    return render(request,"location.html")
+
+
+def location_view(request):
+    location_view = Location.objects.all()
+    return render(request,"locationview.html",{'location_view':location_view})
+
+
+def location_delete(request,id):
+    Location.objects.get(id=id).delete()
+    return HttpResponse("<script>alert('Deleted Successfully');window.location='/location_view/';</script>")
+
+
+def location_edit(request,id):
+    loc = Location.objects.get(id=id)
+
+    if request.method=="POST":
+        name = request.POST.get('name')
+        loc.name = name
+        loc.save()
+
+        return HttpResponse("<script>alert('Updated Successfully');window.location='/location_view/';</script>")
+
+    return render(request,"location_edit.html",{'loc':loc})
+
+
+# ---------------- ROUTE STOP ----------------
+
+def routestop(request):
+
+    routes = Routes.objects.all()
+    locations = Location.objects.all()
+
+    if request.method == "POST":
+
+        route = Routes.objects.get(id=request.POST.get('route'))
+        location = Location.objects.get(id=request.POST.get('location'))
+        order = request.POST.get('order')
+
+        RouteStop.objects.create(
+            route=route,
+            location=location,
+            order=order
+        )
+
+        return HttpResponse("<script>alert('Inserted Successfully');window.location='';</script>")
+
+    return render(request,"routestop.html",{
+        'routes':routes,
+        'locations':locations
+    })
+
+
+def routestop_view(request):
+
+    stops = RouteStop.objects.all()
+
+    return render(request,"routestop_view.html",{
+        'stops':stops
+    })
+
+
+def routestop_delete(request,id):
+
+    RouteStop.objects.get(id=id).delete()
+
+    return HttpResponse("<script>alert('Deleted Successfully');window.location='/routestop_view/';</script>")
+
+
+def routestop_edit(request,id):
+
+    stop = RouteStop.objects.get(id=id)
+    routes = Routes.objects.all()
+    locations = Location.objects.all()
+
+    if request.method == "POST":
+
+        stop.route = Routes.objects.get(id=request.POST.get('route'))
+        stop.location = Location.objects.get(id=request.POST.get('location'))
+        stop.order = request.POST.get('order')
+        stop.save()
+
+        return HttpResponse("<script>alert('Updated Successfully');window.location='/routestop_view/';</script>")
+
+    return render(request,"routestop_edit.html",{
+        'stop':stop,
+        'routes':routes,
+        'locations':locations
+    })
+    
 
 # def seats(request, bus_id):
 #     bus = get_object_or_404(BusReg, id=bus_id)
@@ -488,3 +594,12 @@ def view_bookings(request, trip_id):
         "trip": trip,
         "bookings": bookings
     })
+    
+def date_booking_report(request): 
+    operator = Operator.objects.get(id=request.session['sid']) 
+    start_date = request.GET.get('start_date') 
+    end_date = request.GET.get('end_date') 
+    bookings = BookingDetails.objects.filter(material__operator=operator) 
+    if start_date and end_date:
+        bookings = bookings.filter(booking_master__booking_date__date__range=[start_date, end_date]) 
+        return render(request, 'dbooking_report.html', { 'data': bookings, 'start_date': start_date, 'end_date': end_date })

@@ -1,5 +1,4 @@
 from django.db import models
-from app_core.models import Location
 from smartbus.users.models import User
 
 # Create your models here.
@@ -23,7 +22,10 @@ class Routes(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+class Location(models.Model):
+    name = models.CharField(max_length=50) 
+       
 class BusRoutes(models.Model):
     bid = models.ForeignKey(BusReg,on_delete=models.CASCADE,blank=True)
     rid = models.ForeignKey(Routes,on_delete=models.CASCADE,blank=True)
@@ -32,6 +34,14 @@ class BusRoutes(models.Model):
     def __str__(self):
         return f"{self.bid.name} - {self.rid.name} ({self.time})"
     
+class RouteStop(models.Model):
+    route = models.ForeignKey(Routes, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    order = models.IntegerField()
+    
+    class Meta:
+        ordering = ['order']
+
 # class Seats(models.Model):
 #     bid = models.ForeignKey(BusReg, on_delete=models.CASCADE, blank=True)
 #     seatno = models.CharField(max_length=15)

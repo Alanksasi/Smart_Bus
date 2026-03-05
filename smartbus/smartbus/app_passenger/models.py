@@ -30,3 +30,12 @@ class BookingDetails(models.Model):
     
     def __str__(self):
         return f"{self.master.id} - {self.seat.seatno}"
+
+class Feedback(models.Model):
+    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    message = models.TextField()
+    rating = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.passenger.user.username} - {self.rating}"

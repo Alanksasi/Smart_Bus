@@ -1,6 +1,39 @@
 {% load static %}
 {% include 'layout/partials/admin/header.html' %}
+
 <div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+
+                <h6 class="mb-4">District Register</h6>
+
+                <form method="POST" action="{% url 'core:dis' %}">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="district_name" class="form-label">District Name</label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="district_name"
+                               name="named"
+                               placeholder="Enter district name"
+                               required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Submit
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-secondary rounded h-100 p-4">
@@ -17,5 +50,5 @@
                                 
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
-            </div>
+            </div> -->
 {% include 'layout/partials/admin/footer.html' %}

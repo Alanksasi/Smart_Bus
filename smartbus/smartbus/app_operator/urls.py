@@ -25,6 +25,18 @@ urlpatterns = [
 
     # NEW — operator trip list
     path("trip_view/", views.trip_view, name="trip_view"),
+    
+    # LOCATION
+    path('location/',views.location,name='location'),
+    path('location_view/',views.location_view,name='location_view'),
+    path('location_delete/<int:id>/',views.location_delete,name='location_delete'),
+    path('location_edit/<int:id>/',views.location_edit,name='location_edit'),
+
+# ROUTESTOP
+    path('routestop/',views.routestop,name='routestop'),
+    path('routestop_view/',views.routestop_view,name='routestop_view'),
+    path('routestop_delete/<int:id>/',views.routestop_delete,name='routestop_delete'),
+    path('routestop_edit/<int:id>/',views.routestop_edit,name='routestop_edit'),
 
     # NEW — view bookings for a trip
     path("view_bookings/<int:trip_id>/", views.view_bookings, name="view_bookings"),
@@ -33,4 +45,6 @@ urlpatterns = [
     path("updatelocation/<int:trip_id>/",
          views.updatelocation,
          name="updatelocation"),
+    
+    path('date_booking_report/', views.date_booking_report, name='date_booking_report'),
 ]

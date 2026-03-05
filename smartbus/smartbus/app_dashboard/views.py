@@ -6,7 +6,6 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate,login, logout
 from app_dashboard.models import Operator, Passenger  
-from app_operator.models import Routes
 from app_core.models import District
 from smartbus.users.models import User
 from django.core.mail import send_mail
@@ -72,8 +71,9 @@ def logins(request):
                 return redirect('dashboard:psg')
 
         else:
-            messages.error(request, "Invalid username or password")
-            return redirect('dashboard:login')
+            return HttpResponse("<script>alert('Invalid username or password');window.location='/logins/';</script>")
+            # messages.error(request, "Invalid username or password")
+            # return redirect('dashboard:login')
 
     return render(request, "login.html")
   
@@ -94,7 +94,7 @@ def reg(request):
         user.role="Bus operator"
         user.save()
         Operator.objects.create(user=user, contact=con,dis = District.objects.get(id = dis))
-        return HttpResponse("<script>alert('Successfully Registration.');window.location='/optr/';</script>")
+        return HttpResponse("<script>alert('Successfully Registration.');window.location='/logins/';</script>")
     else:
         v = District.objects.all()
         return render(request, "register.html", {"list":v})
@@ -107,7 +107,7 @@ def reg(request):
 def optr(request):
     if request.user.role != "Bus operator":
         return redirect('dashboard:guest')
-    return render(request, "operator_dashboard.html")
+    return render(request, "operatordashboard.html")
 
 def admv(request):
     view = Operator.objects.all()
@@ -148,7 +148,8 @@ def regi(request):
 # def psg(request):
     # routev = Routes.objects.all()
     # return render(request, "guestdashboard.html",{"routev":routev})
-    
+
+@login_required(login_url='dashboard:login')    
 def psg(request):
     bookings = BookingMaster.objects.filter(passenger__user=request.user).order_by('-booked_at')
     # order_by('-booking_date')[:5]

@@ -1,0 +1,69 @@
+{% load static %}
+{% include 'layout/partials/operator/header.html' %}
+
+<div class="container"> 
+    <div class="page-inner"> 
+        <div class="page-header"> 
+            <h3 class="fw-bold mb-3">Booking Report</h3>
+        </div> 
+        <div class="row"> 
+            <div class="col-md-12"> 
+                <div class="card"> 
+                    <div class="card-header"> 
+                        <form method="get" class="row align-items-end"> 
+                            <div class="col-md-4"> 
+                                <label class="form-label">Start Date</label> 
+                                <input type="date" name="start_date" class="form-control" value="{{ start_date }}"> 
+                            </div>
+                            <div class="col-md-4"> 
+                                <label class="form-label">End Date</label> 
+                                <input type="date" name="end_date" class="form-control" value="{{ end_date }}"> 
+                            </div> 
+                            <div class="col-md-2"> 
+                                <button type="submit" class="btn btn-primary w-100">Filter</button> 
+                            </div> 
+                            <div class="col-md-2"> 
+                                <a href="{% url 'seller_booking_report' %}" class="btn btn-secondary w-100">Reset</a>
+                            </div> 
+                        </form> 
+                    </div> 
+                    <div class="card-body"> 
+                        <div class="table-responsive"> 
+                            <table class="table table-hover"> 
+                                <thead> 
+                                    <tr> 
+                                        <th>#</th> 
+                                        <th>Date</th> 
+                                        <th>Material</th> 
+                                        <th>Buyer</th> 
+                                        <th>Quantity</th> 
+                                        <th>Total Price</th> 
+                                        <th>Status</th> 
+                                    </tr> 
+                                </thead> 
+                                <tbody> 
+                                    {% for d in data %} 
+                                    <tr> 
+                                        <td>{{ forloop.counter }}</td> 
+                                        <td>{{ d.booking_master.booking_date|date:"Y-m-d" }}</td> 
+                                        <td>{{ d.material.material_name }}</td> 
+                                        <td>{{ d.booking_master.buyer.buyer_name }}</td> 
+                                        <td>{{ d.quantity }}</td> 
+                                        <td>₹{{ d.total_price }}</td>
+                                        <td><span class="badge {% if d.booking_master.status == 'Paid' %} badge- success {% else %} badge-warning {% endif %} "> {{ d.booking_master.status }} </span></td> 
+                                    </tr> 
+                                    {% empty %} 
+                                    <tr> 
+                                        <td colspan="7" class="text-center">No bookings found for the selected range.</td> 
+                                    </tr> 
+                                    {% endfor %} 
+                                </tbody> 
+                            </table> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+</div> 
+{% include 'layout/partials/operator/footer.html' %}

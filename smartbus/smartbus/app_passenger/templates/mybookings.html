@@ -1,9 +1,12 @@
-<!-- {% include 'layout/partials/guest/header.html' %} -->
 {% block content %}
 <div class="container mt-5">
+
     <h2>My Bookings</h2>
+
     <div class="table-responsive">
+
         <table class="table table-striped">
+
             <thead>
                 <tr>
                     <th>Booking ID</th>
@@ -13,36 +16,85 @@
                     <th>Total Amount</th>
                     <th>Status</th>
                     <th>Booked At</th>
+                    <th>Track Bus</th>   <!-- NEW COLUMN -->
                 </tr>
             </thead>
+
             <tbody>
+
                 {% for booking in bookings %}
+
                 <tr>
+
                     <td>{{ booking.id }}</td>
+
                     <td>{{ booking.trip.busroute.rid.name }}</td>
+
                     <td>{{ booking.trip.date }}</td>
+
                     <td>
                         {% for detail in booking.details.all %}
                         {{ detail.seat.seatno }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
+
                     <td>{{ booking.amount }}</td>
+
                     <td>
-                        <span
-                            class="badge {% if booking.payment_status == 'paid' %}bg-success{% else %}bg-warning{% endif %}">
+                        <span class="badge {% if booking.payment_status == 'paid' %}bg-success{% else %}bg-warning{% endif %}">
                             {{ booking.payment_status }}
                         </span>
                     </td>
+
                     <td>{{ booking.booked_at }}</td>
+
+                    <!-- TRACK BUTTON -->
+                    <td>
+
+                        {% if booking.trip.date == today and booking.payment_status == "paid" %}
+
+                        <a href="{% url 'passenger:track' booking.trip.id %}"
+                           class="btn btn-sm btn-primary">
+
+                           Track Bus
+
+                        </a>
+
+                        {% else %}
+
+                        <span class="text-muted">Unavailable</span>
+
+                        {% endif %}
+
+                    </td>
+
                 </tr>
+
                 {% empty %}
+
                 <tr>
-                    <td colspan="7" class="text-center">No bookings found.</td>
+                    <td colspan="8" class="text-center">
+                        No bookings found.
+                    </td>
                 </tr>
+
                 {% endfor %}
+                {% comment %}
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Feedback</h5>
+                        <p>Share your travel experience with us.</p>
+                        <a href="{% url 'feedback' %}" class="btn btn-primary">
+                            Give Feedback
+                        </a>
+                    </div>
+                </div>
+                {% endcomment %}
             </tbody>
+
         </table>
+
     </div>
+
 </div>
 {% endblock %}
-<!-- {% include 'layout/partials/guest/footer.html' %} -->

@@ -1,0 +1,25 @@
+<h2>Customer Feedback</h2>
+
+<form action="" method="POST">
+{% csrf_token %}
+
+<label>Rating</label>
+<select name="rating">
+<option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+<option value="4">⭐⭐⭐⭐ Good</option>
+<option value="3">⭐⭐⭐ Average</option>
+<option value="2">⭐⭐ Poor</option>
+<option value="1">⭐ Bad</option>
+</select>
+
+<br><br>
+
+<label>Your Feedback</label><br>
+
+<textarea name="message" rows="5" cols="40"></textarea>
+
+<br><br>
+
+<button type="submit">Submit Feedback</button>
+
+</form>
